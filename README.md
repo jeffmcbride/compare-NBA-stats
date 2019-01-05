@@ -15,6 +15,7 @@ An example of a comparison would be
 
 `nba.compare_stats(['pts', '3p%', 'stl'], ['1985-90', '2009-14'], ['michael jordan', 'lebron james'], 'season')
 `
+
 The value of mode in both functions is either 'season' or 'playoffs'.
 This is a list of the supported stats you can use via nba_scrape:
     'TEAM',
