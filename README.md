@@ -8,12 +8,10 @@ b) compare two players' stats over a certain season range (does not have to be t
 
 An example of a call to grab a player's stats individually would be 
 
-`import nba`
 `nba.player_stats(['pts', '3p%', 'stl'], '2014-18', 'stephen curry', 'season')
 `
 
 An example of a comparison would be 
 
-`import nba`
 `nba.compare_stats(['pts', '3p%', 'stl'], ['1985-90', '2009-14'], ['michael jordan', 'lebron james'], 'season')
 `
