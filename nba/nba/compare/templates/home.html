@@ -1,0 +1,11 @@
+<h1>HomePage</h1>
+
+<form method="GET">
+    Team: <input type="text" name="search"><br/>
+    <input type="submit" value="Submit" />
+</form><br/><br/>
+
+
+{% for myTeam in myTeams %}
+<p>{{myTeam}}</p>
+{% endfor %}
