@@ -1,68 +1,49 @@
-from nba_scrape import NBA
-from tabulate import tabulate
+import matplotlib.pyplot as plt
+from nba_api.stats.endpoints import teamyearbyyearstats
+from nba_api.stats.static import teams
 
-def player_stats(stats, years, p1, mode):
 
-    league = NBA()
-    player = league.get_player(p1)
-    yrs = []
-    p = player.get_stats(stats, years, mode)
-    results = []
-    for years in p:
-        yrs.append(years)
 
-    for i in range(len(yrs)):
-        tuple = (yrs[i],)
-        for j in range(len(stats)):
-            tuple = tuple + (p[yrs[i]][j],)
-        results.append(tuple)
-        
+'''Available team stats:
+    TEAM_ID, TEAM_CITY, TEAM_NAME, YEAR, GP, WINS, LOSSES, WIN_PCT, CONF_RANK, 
+    DIV_RANK, PO_WINS, PO_LOSSES, CONF_COUNT, DIV_COUNT, NBA_FINALS_APPEARANCE, 
+    FGM, FGA, FG_PCT, FG3M, FG3A, FG3_PCT, FTM, FTA, FT_PCT, OREB, DREB, REB, 
+    AST, PF, STL, TOV, BLK, PTS, PTS_RANK'''
     
-    colNames = [p1 + " yrs"]
-    for sts in stats:
-        colNames.append(sts)
-       
-
-    print(tabulate(results, headers=colNames))
+class Team:
+    
+    def __init__(self, name, start, end):
+        self.search_name = name
+        self.start = start
+        self.end = end
+        self.duration = end - start
+        self.teamid = teams.find_teams_by_full_name(self.search_name)[0]['id']
+        self.teamstats = teamyearbyyearstats.TeamYearByYearStats(self.teamid).get_data_frames()
+        self.teamname = self.teamstats[0]['TEAM_NAME'].iloc[-1]
         
         
+    def get_stats(self, stat):
+        return self.teamstats[0].set_index("YEAR")[stat]
         
-def compare_stats(stats, years, players, mode):
-    '''
-    Example of a call:
-    compare_stats(['pts', 'stl'], ['2017-18'], ['stephen curry', 'lebron james'], 'season')
-    '''
-    
-    league = NBA()
-    player1 = league.get_player(players[0])
-    player2 = league.get_player(players[1])
-    p1yrs = []
-    p2yrs = []
-    results = []
-    p1 = player1.get_stats(stats, years[0], mode)
-    p2 = player2.get_stats(stats, years[-1], mode)
-    for years in p1:
-        p1yrs.append(years)
         
-    for years in p2:
-        p2yrs.append(years)
-      
-    
-    if (len(p1yrs) != len(p2yrs)):
-        print("Need to compare the same amount of seasons")
-        return
-    
-    for i in range(len(p1yrs)):
-        tuple = (p1yrs[i], p2yrs[i])
-        for j in range(len(stats)):
-            tuple = tuple + (p1[p1yrs[i]][j], p2[p2yrs[i]][j])
-        results.append(tuple)
-    
-    
-    colNames = [players[0] + ' yrs', players[1] + ' yrs']
-    for sts in stats:
-        colNames.append(players[0] + " " + sts)
-        colNames.append(players[1] + " " + sts)
+    def graph_stats(self, stat):
+        stats = self.get_stats(stat)
+        ax = stats.plot()
+        ax.legend([self.teamname + ' ' + stat]);
+        
+        
+        
+def graphTwoTeams(Team1, Team2, stat):
+    # Create dataframe of years and stat
+    pass
 
-    print(tabulate(results, headers=colNames))
-    
+
+        
+raps = Team('rap', 5, 4)
+raps.graph_stats('WINS')
+
+
+
+
+
+
